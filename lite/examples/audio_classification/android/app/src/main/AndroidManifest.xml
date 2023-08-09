@@ -14,10 +14,10 @@
     ~ See the License for the specific language governing permissions and
     ~ limitations under the License.
 -->
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="org.tensorflow.lite.examples.audio">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -28,7 +28,7 @@
         android:taskAffinity=""
         android:theme="@style/AppTheme">
         <activity
-            android:name="org.tensorflow.lite.examples.audio.MainActivity"
+            android:name=".MainActivity2"
             android:exported="true"
             android:screenOrientation="portrait" >
             <intent-filter>

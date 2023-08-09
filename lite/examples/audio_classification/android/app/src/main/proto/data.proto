@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+option java_package = "org.tensorflow.lite.examples.audio";
+option java_multiple_files = true;
+
+service PersonService {
+  rpc GetPerson(PersonRequest) returns (PersonResponse) {}
+}
+
+message PersonRequest{
+  string firstName = 1;
+  string lastName = 2;
+  int32 age = 3;
+}
+
+message PersonResponse{
+  string message = 1;
+}
