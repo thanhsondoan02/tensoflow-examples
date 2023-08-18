@@ -51,8 +51,8 @@ import java.nio.ByteOrder
 
 class MainActivity2 : AppCompatActivity() {
     companion object {
-        const val CHANNEL_IP = "167.179.48.117"
-        const val CHANNEL_PORT = 50051
+        const val CHANNEL_IP = "riva.ai.ftech.ai"
+//        const val CHANNEL_PORT = 50051
         const val SAMPLING_RATE = 16000
         const val LANGUAGE_CODE = "vi-VN"
         const val ENABLE_AUTOMATIC_PUNCTUATION = true
@@ -71,6 +71,7 @@ class MainActivity2 : AppCompatActivity() {
 
         btnSave.setOnClickListener {
             start()
+//            textToSpeech("Xin chào Xin chào Xin chào Xin chào Xin chào Xin chào")
         }
     }
 
@@ -113,8 +114,8 @@ class MainActivity2 : AppCompatActivity() {
         val buffer = ByteArray(bufferSize)
 
         val creds =
-            TlsChannelCredentials.newBuilder().trustManager(assets.open("ca-cert.pem")).build()
-        val channel = Grpc.newChannelBuilder("$CHANNEL_IP:$CHANNEL_PORT", creds).build()
+            TlsChannelCredentials.newBuilder().trustManager(assets.open("ca-cert.crt")).build()
+        val channel = Grpc.newChannelBuilder(CHANNEL_IP, creds).build()
 
         val nonBlockingStub = RivaSpeechRecognitionGrpc.newStub(channel)
         val streamingConfig = StreamingRecognitionConfig.newBuilder()
@@ -152,11 +153,13 @@ class MainActivity2 : AppCompatActivity() {
                                     call: Call<TimiResponse>,
                                     response: Response<TimiResponse>
                                 ) {
-                                    runOnUiThread {
-                                        tvMessage.text = response.body()?.data?.text
+                                    response.body()?.data?.text?.let { answer ->
+                                        runOnUiThread {
+                                            tvMessage.text = answer
+                                        }
+                                        textToSpeech(answer)
+                                        start()
                                     }
-                                    textToSpeech(it)
-                                    start()
                                 }
 
                                 override fun onFailure(call: Call<TimiResponse>, t: Throwable) {
@@ -177,6 +180,7 @@ class MainActivity2 : AppCompatActivity() {
 
             override fun onError(t: Throwable?) {
                 Log.e("vlalalvalv", "onError ${t?.message}")
+                t?.printStackTrace()
             }
 
             override fun onCompleted() {
@@ -189,8 +193,8 @@ class MainActivity2 : AppCompatActivity() {
 
     private fun textToSpeech(text: String) {
         val creds =
-            TlsChannelCredentials.newBuilder().trustManager(assets.open("ca-cert.pem")).build()
-        val channel = Grpc.newChannelBuilder("$CHANNEL_IP:$CHANNEL_PORT", creds).build()
+            TlsChannelCredentials.newBuilder().trustManager(assets.open("ca-cert.crt")).build()
+        val channel = Grpc.newChannelBuilder(CHANNEL_IP, creds).build()
         val stub = RivaSpeechSynthesisGrpc.newStub(channel)
         val request = SynthesizeSpeechRequest.newBuilder()
             .setLanguageCode(LANGUAGE_CODE)
@@ -211,6 +215,7 @@ class MainActivity2 : AppCompatActivity() {
                 )
                 audioTrack.write(audioData, 0, audioData.size)
                 audioTrack.play()
+                Log.e("vlalalvalv", "TTS onNext")
             }
 
             override fun onError(t: Throwable?) {
