@@ -28,9 +28,8 @@
         android:taskAffinity=""
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MainActivity2"
-            android:exported="true"
-            android:screenOrientation="portrait" >
+            android:name=".RectangleActivity"
+            android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
